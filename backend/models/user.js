@@ -28,6 +28,12 @@ const userSchema = new mongoose.Schema({
     branch: {
         type: String,
         required: true
+    },
+    accountNo: {
+        type: String
+    },
+    IFSC: {
+        type: String
     }
 });
 
