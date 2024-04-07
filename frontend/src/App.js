@@ -1,9 +1,9 @@
-import DashBord from "./pages/DashBord";
+import Login from "./pages/login";
 
 function App() {
   return (
     <div>
-    <DashBord/>
+    <Login/>
     </div>
   );
 }

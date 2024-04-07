@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 
 const { default: mongoose } = require("mongoose");
 const User = require("../models/user");
+const { checkUsers } = require("../middleware/checkuser");
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 
 /* GET auth callback. */
@@ -36,13 +37,13 @@ router.get("/callback", async function (req, res) {
   };
 
   try {
-    console.log(tokenRequest.code);
+    // console.log(tokenRequest.code);
     const response = await req.app.locals.msalClient.acquireTokenByCode(
       tokenRequest
     );
-    console.log("The access token: ", response);
+    // console.log("The access token: ", response);
     const idtoken = response.idToken;
-    console.log("The id token: ", idtoken);
+    // console.log("The id token: ", idtoken);
     // Save the user's homeAccountId in their session
     // req.session.userId = response.account.homeAccountId;
     // console.log("The user id: ", req.session.userId);
@@ -51,12 +52,7 @@ router.get("/callback", async function (req, res) {
       req.app.locals.msalClient,
       response.account.homeAccountId
     );
-
-    // Create user if not exists
-    console.log(user);
-    const userExists = await User.findOne({
-      email: user.mail || user.userPrincipalName,
-    });
+    // console.log(user);
     roll = user.surname;
     year = roll.slice(0, 2);
     year = 24 - year;
@@ -79,8 +75,15 @@ router.get("/callback", async function (req, res) {
       "05": "Design",
     };
     branch = map[branch];
-    console.log(branch);
-    console.log(year);
+   const isUserFinalYearite= checkUsers.checkUser(roll);
+   if (!isUserFinalYearite) {
+    console.log("User is not eligible to use this portal.");
+    res.redirect(`${FRONTEND_URL}/noteligible`);
+    return;
+  }
+    const userExists = await User.findOne({
+      email: user.mail || user.userPrincipalName,
+    });
     if (!userExists) {
       console.log("User does not exist");
 
@@ -107,7 +110,7 @@ router.get("/callback", async function (req, res) {
             // Assuming you have the token in a variable named 'token'
             res.cookie("token", token, { httpOnly: true, sameSite: "strict" });
 
-            res.redirect(`${FRONTEND_URL}/profile`+ "?user=" + newUser._id);
+            res.redirect(`${FRONTEND_URL}`);
             res.send(JSON.stringify(user));
           }
         );

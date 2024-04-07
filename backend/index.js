@@ -9,12 +9,11 @@ const bodyParser = require("body-parser");
 const app = express();
 const port = 3002;
 const authRouter = require("./auth/auth.js");
+const MONGO_URI = process.env.MONGO_URI;
+connect(MONGO_URI);
 
-connect(
-  "mongodb+srv://auth-admin:t2YuYPDKGPIztKib@cluster0.s875rof.mongodb.net/No-dues"
-);
 
-app.use(cors({origin:['http://localhost:3001']}));
+app.use(cors({origin:['http://localhost:3000']}));
 app.use(bodyParser.json());
 
 const msalConfig = {

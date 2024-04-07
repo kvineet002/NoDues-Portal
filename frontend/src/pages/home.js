@@ -1,11 +1,11 @@
 import React from 'react'
 
-function DashBord() {
+function Home() {
   return (
     <div>
-      hello world
+      
     </div>
   )
 }
 
-export default DashBord
+export default Home
